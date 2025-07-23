@@ -94,7 +94,7 @@ queue-monitor &
 - `tomo_demo_async()` - Tomography data collection
 - `_manta_collect_dark_flat()` - Dark and flat field collection
 
-### XAS Plans  
+### XAS Plans
 - `xas_demo_async()` - X-ray absorption spectroscopy scanning
 
 ### Simulation Plans

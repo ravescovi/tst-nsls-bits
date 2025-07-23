@@ -41,7 +41,7 @@ tst-nsls-bits/
 │   ├── startup.py              # Main initialization (replaces 00-startup.py)
 │   ├── devices/
 │   │   ├── motors.py           # Motor creation functions
-│   │   ├── detectors.py        # Detector creation functions  
+│   │   ├── detectors.py        # Detector creation functions
 │   │   ├── panda.py            # PandA creation functions
 │   │   └── flyers.py           # Flyer creation functions
 │   ├── plans/
@@ -306,7 +306,7 @@ RUNNING_IN_MOCK_MODE = (
                "ENDSTATION_ACRONYM", os.getenv("BEAMLINE_ACRONYM", "")
            ).lower()
            return Path(f"/nsls2/data/{beamline_tla}/legacy/mock-proposals")
-   
+
        def __call__(self, device_name: str = None) -> PathInfo:
            directory_path = self.generate_directory_path(device_name=device_name)
            return PathInfo(
@@ -321,7 +321,7 @@ RUNNING_IN_MOCK_MODE = (
    # Update devices/flyers.py
    class TSTMantaFlyer(StandardFlyer):
        """TST-specific Manta camera flyer with coordination logic."""
-       
+
    class TSTPandAFlyer(StandardFlyer):
        """TST-specific PandA flyer with trigger coordination."""
    ```
@@ -413,14 +413,14 @@ RUNNING_IN_MOCK_MODE = (
 # tests/test_devices.py
 def test_tst_path_provider():
     """Test TST path provider functionality."""
-    
+
 def test_device_creators_with_mock():
     """Test all device creators in mock mode."""
 
-# tests/test_plans.py  
+# tests/test_plans.py
 def test_tomography_plan_execution():
     """Test tomography plan with mock devices."""
-    
+
 def test_xas_plan_coordination():
     """Test XAS plan device coordination."""
 ```
@@ -430,7 +430,7 @@ def test_xas_plan_coordination():
 # tests/integration/test_full_startup.py
 def test_complete_instrument_startup():
     """Test full instrument initialization."""
-    
+
 def test_plan_execution_with_devices():
     """Test plans with actual device coordination."""
 ```
@@ -447,7 +447,7 @@ def test_plan_execution_with_devices():
 
 ### Functional Completeness
 - [ ] All original devices successfully created and accessible
-- [ ] All original plans execute with equivalent functionality  
+- [ ] All original plans execute with equivalent functionality
 - [ ] Data paths follow NSLS-II standards
 - [ ] Hardware coordination matches original behavior
 
