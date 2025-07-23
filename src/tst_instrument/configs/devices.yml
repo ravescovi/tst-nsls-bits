@@ -1,0 +1,37 @@
+# TST NSLS-II Device Configuration
+# Device instances and configurations for the TST beamline
+
+# Simulation devices (pure ophyd - no custom creators needed)
+apsbits.utils.sim_creator.predefined_device:
+- { creator: ophyd.sim.motor, name: sim_motor }
+- { creator: ophyd.sim.noisy_det, name: sim_det }
+
+apstools.devices.SimulatedApsPssShutterWithStatus:
+- name: shutter
+  labels: [ "shutters", "baseline" ]
+
+# TST-specific devices using custom creators ONLY for ophyd_async devices
+# Motors (ophyd_async - needs custom creator)
+tst_instrument.utils.device_creators.create_tst_motor:
+- name: rot_motor
+  prefix: "XF:31ID1-OP:1{CMT:1-Ax:Rot}Mtr"
+  labels: ["motors", "rotation", "baseline"]
+
+# Detectors (ophyd_async - needs custom creator)
+tst_instrument.utils.device_creators.create_tst_detector:
+- name: manta1
+  prefix: "XF:31ID1-ES:1{Manta:1}"
+  labels: ["detectors", "cameras"]
+- name: manta2
+  prefix: "XF:31ID1-ES:1{Manta:2}"
+  labels: ["detectors", "cameras"]
+
+# PandA trigger box (ophyd_async - needs custom creator)
+tst_instrument.utils.device_creators.create_tst_panda:
+- name: panda1
+  prefix: "XF:31ID1-ES:1{Panda:1}"
+  labels: ["detectors", "triggers", "panda"]
+
+# Flyers (ophyd_async - complex to implement, removing for now)
+# These will be created dynamically in plans when needed
+# - default_flyer, manta_flyer, panda_flyer
