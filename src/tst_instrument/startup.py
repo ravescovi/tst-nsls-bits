@@ -102,8 +102,8 @@ from .plans.tomography_plans import _manta_collect_dark_flat  # noqa: F401
 from .plans.tomography_plans import tomo_demo_async  # noqa: F401
 from .plans.xas_plans import energy_calibration_plan  # noqa: F401
 from .plans.xas_plans import xas_demo_async  # noqa: F401
-from .utils.hardware import initialize_hardware_systems
-from .utils.hardware import warmup_hdf5_plugins
+from .utils.hardware import initialize_hardware_systems  # do we need this?
+from .utils.hardware import warmup_hdf5_plugins  # do we need this?
 
 # Experiment specific logic, device and plan loading
 RE(make_devices(clear=False, file="devices.yml"))  # Create the devices.
@@ -115,21 +115,21 @@ initialize_hardware_systems()
 
 # Warm up HDF5 plugins for detectors with HDF5 capabilities
 # Get detectors from oregistry and filter for those with HDF5 plugins
-detectors_with_hdf5 = []
-for device_name in oregistry.keys():
-    try:
-        device = oregistry.find(name=device_name)
-        if hasattr(device, "hdf5"):
-            detectors_with_hdf5.append(device)
-    except Exception as e:
-        logger.debug(f"Could not check HDF5 capability for {device_name}: {e}")
+# detectors_with_hdf5 = []
+# for device_name in oregistry.keys():
+#     try:
+#         device = oregistry.find(name=device_name)
+#         if hasattr(device, "hdf5"):
+#             detectors_with_hdf5.append(device)
+#     except Exception as e:
+#         logger.debug(f"Could not check HDF5 capability for {device_name}: {e}")
 
-if detectors_with_hdf5:
-    logger.info(
-        f"Found {len(detectors_with_hdf5)} detectors with HDF5 plugins, warming up..."
-    )
-    warmup_hdf5_plugins(detectors_with_hdf5)
-else:
-    logger.info("No detectors with HDF5 plugins found")
+# if detectors_with_hdf5:
+#     logger.info(
+#         f"Found {len(detectors_with_hdf5)} detectors with HDF5 plugins, warming up..."
+#     )
+#     warmup_hdf5_plugins(detectors_with_hdf5)
+# else:
+#     logger.info("No detectors with HDF5 plugins found")
 
 logger.info("TST NSLS-II instrument startup completed successfully")
