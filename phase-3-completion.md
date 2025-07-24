@@ -248,7 +248,7 @@ async def advanced_plan():
 ```python
 # All original functionality works identically
 ✅ rot_motor.set(90) - Motor positioning
-✅ manta1.stage() - Detector staging  
+✅ manta1.stage() - Detector staging
 ✅ panda1.prepare() - PandA configuration
 ✅ tomo_demo_async() - Tomography plan execution
 ✅ xas_demo_async() - XAS scan execution

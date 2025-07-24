@@ -64,7 +64,7 @@ def xas_demo_async(
     rot_motor = oregistry.find(name="rot_motor")
 
     # Create advanced flyer coordinator for sophisticated coordination
-    from ..devices.flyers import create_advanced_flyer_coordinator
+    from tst_instrument.devices.tst_flyer import create_advanced_flyer_coordinator
 
     # Create flyers dynamically (enhanced from original TST)
     detectors_list = [detector] if detector else []
@@ -270,7 +270,7 @@ def xas_demo_async(
 
 
 def energy_calibration_plan(
-    energy_points: list, motor: str = "rot_motor", md: dict = DEFAULT_MD
+    energy_points: list, motor: str = "rot_motor", md: dict = None
 ):
     """
     Energy calibration plan for XAS measurements.
@@ -291,15 +291,18 @@ def energy_calibration_plan(
     """
     logger.info(f"Starting energy calibration with {len(energy_points)} points")
 
+    if md is None:
+        md = DEFAULT_MD
+
     # Get motor from oregistry
-    motor = oregistry.find(name=motor)
+    motor_device = oregistry.find(name=motor)
 
     _md = {
         "plan_name": "energy_calibration_plan",
         "beamline_id": "tst_nsls",
         "scan_type": "calibration",
         "energy_points": energy_points,
-        "motors": [motor.name],
+        "motors": [motor_device.name],
         **md,
     }
 
@@ -307,13 +310,12 @@ def energy_calibration_plan(
 
     for i, energy in enumerate(energy_points):
         print(f"Calibration point {i+1}/{len(energy_points)}: {energy}")
-        yield from bps.mv(motor, energy)
-        yield from bps.trigger_and_read([motor], name="calibration")
+        yield from bps.mv(motor_device, energy)
+        yield from bps.trigger_and_read([motor_device], name="calibration")
 
     yield from bps.close_run()
     logger.info("Energy calibration completed")
 
 
-# Decorator for proper plan metadata
-xas_demo_async = make_decorator(xas_demo_async)
-energy_calibration_plan = make_decorator(energy_calibration_plan)
+# Note: make_decorator not needed for generator functions
+# These are already proper Bluesky plans that yield messages

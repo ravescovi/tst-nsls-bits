@@ -9,6 +9,18 @@ Includes:
 * Bluesky queueserver
 """
 
+# MOCK mode configuration
+# Set to True for development/testing without hardware
+MOCK_MODE = False
+
+# Override MOCK mode from environment variables
+import os
+
+if os.environ.get("TST_MOCK_MODE", "NO").upper() == "YES":
+    MOCK_MODE = True
+if os.environ.get("RUNNING_IN_NSLS2_CI", "NO").upper() == "YES":
+    MOCK_MODE = True
+
 # Standard Library Imports
 import logging
 from pathlib import Path
@@ -67,17 +79,19 @@ RE, sd = init_RE(iconfig, bec_instance=bec, cat_instance=cat)
 # Optional Nexus callback block
 # delete this block if not using Nexus
 if iconfig.get("NEXUS_DATA_FILES", {}).get("ENABLE", False):
-    from .callbacks.nexus_data_file_writer import nxwriter_init
+    from tst_instrument.callbacks.nexus_data_file_writer import nxwriter_init
 
     nxwriter = nxwriter_init(RE)
 
 # Optional SPEC callback block
 # delete this block if not using SPEC
 if iconfig.get("SPEC_DATA_FILES", {}).get("ENABLE", False):
-    from .callbacks.spec_data_file_writer import init_specwriter_with_RE
-    from .callbacks.spec_data_file_writer import newSpecFile  # noqa: F401
-    from .callbacks.spec_data_file_writer import spec_comment  # noqa: F401
-    from .callbacks.spec_data_file_writer import specwriter  # noqa: F401
+    from tst_instrument.callbacks.spec_data_file_writer import init_specwriter_with_RE
+    from tst_instrument.callbacks.spec_data_file_writer import newSpecFile  # noqa: F401
+    from tst_instrument.callbacks.spec_data_file_writer import (
+        spec_comment,  # noqa: F401
+    )
+    from tst_instrument.callbacks.spec_data_file_writer import specwriter  # noqa: F401
 
     init_specwriter_with_RE(RE)
 
@@ -98,12 +112,17 @@ else:
 
 # Import TST-specific plans and utilities
 # ruff: noqa: E402
-from .plans.tomography_plans import _manta_collect_dark_flat  # noqa: F401
-from .plans.tomography_plans import tomo_demo_async  # noqa: F401
-from .plans.xas_plans import energy_calibration_plan  # noqa: F401
-from .plans.xas_plans import xas_demo_async  # noqa: F401
-from .utils.hardware import initialize_hardware_systems  # do we need this?
-from .utils.hardware import warmup_hdf5_plugins  # do we need this?
+from tst_instrument.plans.sim_plans import sim_count_plan  # noqa: F401
+from tst_instrument.plans.sim_plans import sim_print_plan  # noqa: F401
+from tst_instrument.plans.sim_plans import sim_rel_scan_plan  # noqa: F401
+from tst_instrument.plans.tomography_plans import _manta_collect_dark_flat  # noqa: F401
+from tst_instrument.plans.tomography_plans import tomo_demo_async  # noqa: F401
+from tst_instrument.plans.xas_plans import energy_calibration_plan  # noqa: F401
+from tst_instrument.plans.xas_plans import xas_demo_async  # noqa: F401
+from tst_instrument.utils.system_tools import (
+    initialize_hardware_systems,  # do we need this?
+)
+from tst_instrument.utils.warmup_hdf5 import warmup_hdf5_plugins  # do we need this?
 
 # Experiment specific logic, device and plan loading
 RE(make_devices(clear=False, file="devices.yml"))  # Create the devices.
@@ -115,21 +134,29 @@ initialize_hardware_systems()
 
 # Warm up HDF5 plugins for detectors with HDF5 capabilities
 # Get detectors from oregistry and filter for those with HDF5 plugins
-# detectors_with_hdf5 = []
-# for device_name in oregistry.keys():
-#     try:
-#         device = oregistry.find(name=device_name)
-#         if hasattr(device, "hdf5"):
-#             detectors_with_hdf5.append(device)
-#     except Exception as e:
-#         logger.debug(f"Could not check HDF5 capability for {device_name}: {e}")
+detectors_with_hdf5 = []
+try:
+    # Use oregistry.all_devices to get all devices
+    all_devices = oregistry.all_devices
+    for device in all_devices:
+        try:
+            if hasattr(device, "hdf5"):
+                detectors_with_hdf5.append(device)
+        except Exception as e:
+            device_name = getattr(device, 'name', 'unknown')
+            logger.debug(f"Could not check HDF5 capability for {device_name}: {e}")
+except Exception as e:
+    logger.warning(f"Could not access oregistry devices for HDF5 detection: {e}")
 
-# if detectors_with_hdf5:
-#     logger.info(
-#         f"Found {len(detectors_with_hdf5)} detectors with HDF5 plugins, warming up..."
-#     )
-#     warmup_hdf5_plugins(detectors_with_hdf5)
-# else:
-#     logger.info("No detectors with HDF5 plugins found")
+if detectors_with_hdf5:
+    logger.info(
+        f"Found {len(detectors_with_hdf5)} detectors with HDF5 plugins, warming up..."
+    )
+    try:
+        warmup_hdf5_plugins(detectors_with_hdf5)
+    except Exception as e:
+        logger.warning(f"HDF5 warmup failed: {e}")
+else:
+    logger.info("No detectors with HDF5 plugins found")
 
 logger.info("TST NSLS-II instrument startup completed successfully")

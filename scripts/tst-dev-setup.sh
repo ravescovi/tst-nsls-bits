@@ -15,7 +15,7 @@ OVERLAYS_DIR="${PROJECT_ROOT}/overlays"
 # Development repositories to clone and install
 declare -a CORE_REPOS=(
     "ophyd-async"
-    "bluesky" 
+    "bluesky"
     "event-model"
     "tiled"
     "nslsii"
@@ -64,12 +64,12 @@ check_python() {
 # Clean existing environment
 clean_environment() {
     log "Cleaning existing development environment"
-    
+
     if [ -d "${VENV_DIR}" ]; then
         warn "Removing existing virtual environment: ${VENV_DIR}"
         rm -rf "${VENV_DIR}"
     fi
-    
+
     if [ -d "${OVERLAYS_DIR}" ]; then
         warn "Removing existing overlays directory: ${OVERLAYS_DIR}"
         rm -rf "${OVERLAYS_DIR}"
@@ -81,10 +81,10 @@ create_venv() {
     log "Creating virtual environment in ${VENV_DIR}"
     mkdir -p "${VENV_DIR}"
     "python${PYTHON_VERSION}" -m venv "${VENV_DIR}"
-    
+
     # Activate virtual environment
     source "${VENV_DIR}/bin/activate"
-    
+
     # Upgrade pip
     pip install --upgrade pip setuptools wheel
     log "Virtual environment created and activated"
@@ -93,10 +93,10 @@ create_venv() {
 # Install base requirements
 install_base_requirements() {
     log "Installing base requirements"
-    
+
     # Install TST BITS package in development mode
     pip install -e "${PROJECT_ROOT}[dev]"
-    
+
     log "Base requirements installed"
 }
 
@@ -105,15 +105,15 @@ install_dev_repos() {
     log "Setting up development overlays in ${OVERLAYS_DIR}"
     mkdir -p "${OVERLAYS_DIR}"
     cd "${OVERLAYS_DIR}"
-    
+
     local repos=("${CORE_REPOS[@]}" "${TST_REPOS[@]}")
     local total=${#repos[@]}
     local current=0
-    
+
     for repo in "${repos[@]}"; do
         current=$((current + 1))
         info "[$current/$total] Processing repository: $repo"
-        
+
         if [ -d "$repo" ]; then
             warn "Repository $repo already exists, skipping clone"
             cd "$repo"
@@ -125,7 +125,7 @@ install_dev_repos() {
             fi
             cd "$repo"
         fi
-        
+
         # Install in development mode
         log "Installing $repo in development mode"
         if [ -f "pyproject.toml" ] || [ -f "setup.py" ]; then
@@ -137,10 +137,10 @@ install_dev_repos() {
         else
             warn "No setup.py or pyproject.toml found in $repo"
         fi
-        
+
         cd "${OVERLAYS_DIR}"
     done
-    
+
     cd "${PROJECT_ROOT}"
     log "Development repositories setup complete"
 }
@@ -148,7 +148,7 @@ install_dev_repos() {
 # Create activation script
 create_activation_script() {
     local activate_script="${PROJECT_ROOT}/activate-dev.sh"
-    
+
     cat > "$activate_script" << 'EOF'
 #!/bin/bash
 # TST NSLS-II BITS Development Environment Activation
@@ -188,7 +188,7 @@ EOF
 # Setup pre-commit hooks
 setup_pre_commit() {
     log "Setting up pre-commit hooks"
-    
+
     if command -v pre-commit &> /dev/null; then
         pre-commit install
         log "Pre-commit hooks installed"
@@ -241,7 +241,7 @@ EOF
 
 # Parse command line arguments
 CLEAN=false
-NO_OVERLAYS=false  
+NO_OVERLAYS=false
 NO_PRECOMMIT=false
 DRY_RUN=false
 
@@ -282,7 +282,7 @@ main() {
     log "Setting up TST NSLS-II BITS development environment"
     log "Project root: ${PROJECT_ROOT}"
     log "Python version: ${PYTHON_VERSION}"
-    
+
     if [ "$DRY_RUN" = true ]; then
         log "DRY RUN - Would perform the following actions:"
         log "  - Check Python ${PYTHON_VERSION}"
@@ -294,26 +294,26 @@ main() {
         [ "$NO_PRECOMMIT" = false ] && log "  - Setup pre-commit hooks"
         exit 0
     fi
-    
+
     check_python
-    
+
     if [ "$CLEAN" = true ]; then
         clean_environment
     fi
-    
+
     create_venv
     install_base_requirements
-    
+
     if [ "$NO_OVERLAYS" = false ]; then
         install_dev_repos
     fi
-    
+
     create_activation_script
-    
+
     if [ "$NO_PRECOMMIT" = false ]; then
         setup_pre_commit
     fi
-    
+
     show_completion
 }
 

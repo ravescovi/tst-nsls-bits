@@ -14,7 +14,7 @@ Phase 1 of the TST NSLS-II BITS migration has been successfully completed with a
 
 ### ✅ Critical Infrastructure Completed
 
-1. **TSTPathProvider Implementation** 
+1. **TSTPathProvider Implementation**
    - NSLS-II compliant data organization
    - Mock mode support for development
    - Automatic proposal directory handling
@@ -67,7 +67,7 @@ Phase 1 of the TST NSLS-II BITS migration has been successfully completed with a
 # Original: scripts/panda-flyer-async.py
 class TSTFlyerCoordinator:
     """Advanced flyer coordination with timing validation"""
-    
+
 # Original: Complex trigger logic in XAS plans
 class TSTTriggerLogic:
     """Custom trigger logic for TST hardware coordination"""
@@ -115,7 +115,7 @@ class TSTTriggerLogic:
    # NEW: Extensible hardware management
    class HardwareManager:
        - warmup_hdf5_plugins()
-       - initialize_hardware_systems() 
+       - initialize_hardware_systems()
        - validate_device_connections()
    ```
 
@@ -162,8 +162,8 @@ class TSTTriggerLogic:
    # src/tst_instrument/devices/advanced_flyers.py
    class TSTMantaFlyer(StandardFlyer):
        """Enhanced Manta flyer with timing coordination"""
-       
-   class TSTPandAFlyer(StandardFlyer):  
+
+   class TSTPandAFlyer(StandardFlyer):
        """Enhanced PandA flyer with trigger logic"""
    ```
 
@@ -175,7 +175,7 @@ class TSTTriggerLogic:
 
 3. **Enhance XAS Plans**
    - Dynamic flyer creation
-   - Complex timing coordination  
+   - Complex timing coordination
    - Energy calibration integration
    - Progress reporting
 
@@ -214,7 +214,7 @@ class TSTTriggerLogic:
    - Create beamline operation manual
    - Add troubleshooting guides
 
-2. **Developer Documentation**  
+2. **Developer Documentation**
    - API reference completion
    - Architecture decision records
    - Migration guides
@@ -250,9 +250,9 @@ class TSTTriggerLogic:
 class TSTFlyerCoordinator:
     def __init__(self, detectors, motors, panda):
         self.detectors = detectors
-        self.motors = motors  
+        self.motors = motors
         self.panda = panda
-        
+
     async def coordinate_acquisition(self, plan_params):
         # Complex coordination logic
         pass
@@ -360,7 +360,7 @@ Phase 1 has successfully established a solid foundation for the TST NSLS-II BITS
 
 **Key Achievements:**
 - ✅ Complete infrastructure modernization
-- ✅ Enhanced code quality and maintainability  
+- ✅ Enhanced code quality and maintainability
 - ✅ NSLS-II standard compliance
 - ✅ Comprehensive testing framework
 - ✅ Developer-friendly architecture

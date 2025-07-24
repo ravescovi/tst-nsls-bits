@@ -10,15 +10,16 @@ apstools.devices.SimulatedApsPssShutterWithStatus:
 - name: shutter
   labels: [ "shutters", "baseline" ]
 
-# TST-specific devices using custom creators ONLY for ophyd_async devices
-# Motors (ophyd_async - needs custom creator)
-tst_instrument.utils.device_creators.create_tst_motor:
+# TST-specific devices using individual device classes
+
+# Motors - using TSTMotor class
+tst_instrument.devices.tst_motor.TSTMotor:
 - name: rot_motor
   prefix: "XF:31ID1-OP:1{CMT:1-Ax:Rot}Mtr"
   labels: ["motors", "rotation", "baseline"]
 
-# Detectors (ophyd_async - needs custom creator)
-tst_instrument.utils.device_creators.create_tst_detector:
+# Detectors - using TSTDetector class
+tst_instrument.devices.tst_detector.TSTDetector:
 - name: manta1
   prefix: "XF:31ID1-ES:1{Manta:1}"
   labels: ["detectors", "cameras"]
@@ -26,12 +27,12 @@ tst_instrument.utils.device_creators.create_tst_detector:
   prefix: "XF:31ID1-ES:1{Manta:2}"
   labels: ["detectors", "cameras"]
 
-# PandA trigger box (ophyd_async - needs custom creator)
-tst_instrument.utils.device_creators.create_tst_panda:
-- name: panda1
-  prefix: "XF:31ID1-ES:1{Panda:1}"
-  labels: ["detectors", "triggers", "panda"]
+# PandA trigger box - using TSTPanda class (temporarily disabled due to p4p dependency)
+# tst_instrument.devices.tst_panda.TSTPanda:
+# - name: panda1
+#   prefix: "XF:31ID1-ES:1{Panda:1}"
+#   labels: ["detectors", "triggers", "panda"]
 
-# Flyers (ophyd_async - complex to implement, removing for now)
-# These will be created dynamically in plans when needed
+# Flyers (ophyd_async) - created dynamically in flyers.py
+# These will be created when needed by plans
 # - default_flyer, manta_flyer, panda_flyer

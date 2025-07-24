@@ -43,13 +43,13 @@ check_tiled() {
 # Setup storage directory
 setup_storage() {
     log "Setting up storage directory: ${STORAGE_DIR}"
-    
+
     # Clean and recreate storage directory
     if [ -d "${STORAGE_DIR}" ]; then
         warn "Removing existing storage directory"
         rm -rf "${STORAGE_DIR}"
     fi
-    
+
     mkdir -p "${STORAGE_DIR}/data"
     log "Storage directory created: ${STORAGE_DIR}"
 }
@@ -88,7 +88,7 @@ start_server() {
     log "  Workspace: ${STORAGE_DIR}/data/"
     log "  Data root: ${DATA_ROOT}"
     log "  API Key: ${TILED_API_KEY:0:8}..."
-    
+
     exec tiled serve catalog \
         "${CATALOG_DB}" \
         -w "${STORAGE_DIR}/data/" \
@@ -120,7 +120,7 @@ Examples:
     $0                                 # Start with defaults
     $0 -s /data/tiled -d /nsls2/data/tst/  # Custom directories
     $0 --dry-run                       # Show configuration
-    
+
 EOF
 }
 
@@ -161,22 +161,22 @@ done
 # Main execution
 main() {
     log "Starting TST NSLS-II BITS Tiled Server"
-    
+
     check_tiled
     setup_api_key
     check_data_root
     setup_storage
     init_catalog
-    
+
     if [ "${DRY_RUN:-0}" == "1" ]; then
         log "DRY RUN - Configuration:"
         log "  Storage: ${STORAGE_DIR}"
-        log "  Catalog: ${CATALOG_DB}" 
+        log "  Catalog: ${CATALOG_DB}"
         log "  Data root: ${DATA_ROOT}"
         log "  API key: ${TILED_API_KEY:0:8}..."
         exit 0
     fi
-    
+
     start_server
 }
 
