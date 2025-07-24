@@ -16,15 +16,15 @@ logger = logging.getLogger(__name__)
 class TSTMotor(Motor):
     """
     TST beamline motor device.
-    
+
     Enhanced Motor class with TST-specific configuration and behavior.
     All PV prefixes are configured in configs/devices.yml.
     """
-    
+
     def __init__(self, prefix: str, name: str = "", labels=None, **kwargs):
         """
         Initialize TST motor.
-        
+
         Parameters
         ----------
         prefix : str
@@ -41,14 +41,14 @@ class TSTMotor(Motor):
             os.environ.get("TST_MOCK_MODE", "NO") == "YES"
             or os.environ.get("RUNNING_IN_NSLS2_CI", "NO") == "YES"
         )
-        
+
         # Store labels for BITS framework
         self._labels = labels or []
-        
+
         # Initialize with mock mode context
         with init_devices(mock=mock_mode):
             super().__init__(prefix, name=name, **kwargs)
-            
+
         logger.info(
             f"Initialized TST motor '{name}' with prefix '{prefix}' "
             f"(mock={mock_mode})"

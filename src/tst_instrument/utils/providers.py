@@ -27,7 +27,7 @@ class TSTPathProvider(NSLS2PathProvider):
             metadata_dict = {
                 "proposal_id": "commissioning",
                 "scan_id": 1,
-                "beamline_id": "tst"
+                "beamline_id": "tst",
             }
         super().__init__(metadata_dict=metadata_dict)
 
@@ -83,11 +83,7 @@ class TSTMockPathProvider(TSTPathProvider):
     def __init__(self):
         """Initialize mock path provider with required metadata."""
         # Provide mock metadata for the parent constructor
-        mock_metadata = {
-            "proposal_id": "999999",
-            "scan_id": 1,
-            "beamline_id": "tst"
-        }
+        mock_metadata = {"proposal_id": "999999", "scan_id": 1, "beamline_id": "tst"}
         super().__init__(metadata_dict=mock_metadata)
 
     def get_beamline_proposals_dir(self):
@@ -151,6 +147,6 @@ def get_tst_path_provider(mock_mode: bool = False) -> TSTPathProvider:
         metadata_dict = {
             "proposal_id": "commissioning",
             "scan_id": 1,
-            "beamline_id": "tst"
+            "beamline_id": "tst",
         }
         return TSTPathProvider(metadata_dict=metadata_dict)

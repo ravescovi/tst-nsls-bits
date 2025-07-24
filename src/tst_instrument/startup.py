@@ -143,7 +143,7 @@ try:
             if hasattr(device, "hdf5"):
                 detectors_with_hdf5.append(device)
         except Exception as e:
-            device_name = getattr(device, 'name', 'unknown')
+            device_name = getattr(device, "name", "unknown")
             logger.debug(f"Could not check HDF5 capability for {device_name}: {e}")
 except Exception as e:
     logger.warning(f"Could not access oregistry devices for HDF5 detection: {e}")

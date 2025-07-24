@@ -12,7 +12,6 @@ import bluesky.plan_stubs as bps
 
 # Import oregistry for device access
 from apsbits.core.instrument_init import oregistry
-from bluesky.utils import make_decorator
 
 logger = logging.getLogger(__name__)
 

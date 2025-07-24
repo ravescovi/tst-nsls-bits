@@ -8,17 +8,16 @@ advanced coordination, and sophisticated timing validation.
 import asyncio
 import logging
 import os
-import time
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Dict
+from typing import List
+from typing import Optional
 
-from ophyd_async.core import (
-    DetectorTrigger,
-    StandardFlyer,
-    TriggerInfo,
-    TriggerLogic,
-    init_devices,
-)
+from ophyd_async.core import DetectorTrigger
+from ophyd_async.core import StandardFlyer
+from ophyd_async.core import TriggerInfo
+from ophyd_async.core import TriggerLogic
+from ophyd_async.core import init_devices
 from ophyd_async.core.device import DeviceVector
 from ophyd_async.epics.advimba import VimbaDetector
 from ophyd_async.fastcs.panda import HDFPanda
@@ -27,6 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 # Enumerations and Constants
+
 
 class TriggerState(str, Enum):
     """Enumeration of flyer trigger states for coordination."""
@@ -41,17 +41,18 @@ class TriggerState(str, Enum):
 
 # Basic TST Flyer Classes
 
+
 class TSTFlyer(StandardFlyer):
     """
     TST beamline StandardFlyer device.
-    
+
     Enhanced StandardFlyer class with TST-specific trigger logic.
     """
-    
+
     def __init__(self, name: str = "", trigger_logic=None, **kwargs):
         """
         Initialize TST flyer with default trigger logic if not provided.
-        
+
         Parameters
         ----------
         name : str
@@ -66,19 +67,20 @@ class TSTFlyer(StandardFlyer):
             os.environ.get("TST_MOCK_MODE", "NO") == "YES"
             or os.environ.get("RUNNING_IN_NSLS2_CI", "NO") == "YES"
         )
-        
+
         if trigger_logic is None:
             # Create a basic trigger logic for the flyer
             trigger_logic = TriggerLogic()
-        
+
         # Initialize with mock mode context
         with init_devices(mock=mock_mode):
             super().__init__(trigger_logic=trigger_logic, name=name, **kwargs)
-            
+
         logger.info(f"Initialized TST flyer '{name}' (mock={mock_mode})")
 
 
 # Advanced Trigger Logic
+
 
 class TSTTriggerLogic(TriggerLogic):
     """
@@ -167,6 +169,7 @@ class TSTTriggerLogic(TriggerLogic):
 
 
 # Specialized Flyer Classes
+
 
 class TSTMantaFlyer(StandardFlyer):
     """
@@ -291,6 +294,7 @@ class TSTPandAFlyer(StandardFlyer):
 
 # Advanced Coordination
 
+
 class TSTFlyerCoordinator:
     """
     Advanced flyer coordinator for multi-device synchronized acquisition.
@@ -313,7 +317,9 @@ class TSTFlyerCoordinator:
 
     async def prepare_all(self, value: int):
         """Prepare all flyers with timing coordination."""
-        logger.info(f"{self.name}: Preparing {len(self.flyers)} flyers for {value} frames")
+        logger.info(
+            f"{self.name}: Preparing {len(self.flyers)} flyers for {value} frames"
+        )
 
         # Collect timing parameters from all flyers
         timing_params = {}
@@ -324,7 +330,9 @@ class TSTFlyerCoordinator:
 
         # Validate timing coordination
         if timing_params:
-            validation_result = self._timing_validator.validate_coordination(timing_params)
+            validation_result = self._timing_validator.validate_coordination(
+                timing_params
+            )
             if not validation_result["valid"]:
                 logger.warning(
                     f"{self.name}: Timing validation warnings: "
@@ -396,6 +404,7 @@ class TimingValidator:
 
 
 # Factory Functions
+
 
 def create_tst_flyers(mock: bool = False):
     """

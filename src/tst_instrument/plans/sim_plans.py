@@ -25,10 +25,10 @@ DEFAULT_MD = {"title": "test run with simulator(s)"}
 def sim_count_plan(detector=None, num: int = 1, imax: float = 10_000, md: dict = None):
     """Demonstrate the ``count()`` plan."""
     logger.debug("sim_count_plan()")
-    
+
     if md is None:
         md = DEFAULT_MD
-    
+
     # Use provided detector or get from oregistry
     if detector is None:
         try:
@@ -36,11 +36,11 @@ def sim_count_plan(detector=None, num: int = 1, imax: float = 10_000, md: dict =
         except KeyError:
             logger.error("sim_det not found in oregistry")
             return
-    
+
     # Set detector parameters if supported
-    if hasattr(detector, 'Imax'):
+    if hasattr(detector, "Imax"):
         yield from bps.mv(detector.Imax, imax)
-    
+
     yield from bp.count([detector], num=num, md=md)
 
 
@@ -72,10 +72,10 @@ def sim_rel_scan_plan(
 ):
     """Demonstrate the ``rel_scan()`` plan."""
     logger.debug("sim_rel_scan_plan()")
-    
+
     if md is None:
         md = DEFAULT_MD
-    
+
     # Use provided devices or get from oregistry
     if detector is None:
         try:
@@ -83,7 +83,7 @@ def sim_rel_scan_plan(
         except KeyError:
             logger.error("sim_det not found in oregistry")
             return
-            
+
     if motor is None:
         try:
             motor = oregistry["sim_motor"]
@@ -91,7 +91,7 @@ def sim_rel_scan_plan(
             logger.error("sim_motor not found in oregistry")
             return
     # Configure detector if it has the required attributes
-    if hasattr(detector, 'Imax'):
+    if hasattr(detector, "Imax"):
         # fmt: off
         yield from bps.mv(
             detector.Imax, imax,
@@ -103,7 +103,7 @@ def sim_rel_scan_plan(
         print(f"sim_rel_scan_plan(): {motor.position=}.")
         print(f"sim_rel_scan_plan(): {detector.read()=}.")
         print(f"sim_rel_scan_plan(): {detector.read_configuration()=}.")
-        if hasattr(detector.noise, '_enum_strs'):
+        if hasattr(detector.noise, "_enum_strs"):
             print(f"sim_rel_scan_plan(): {detector.noise._enum_strs=}.")
-    
+
     yield from bp.rel_scan([detector], motor, start, stop, num=num, md=md)

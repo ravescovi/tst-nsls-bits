@@ -123,7 +123,7 @@ def generate_device_inventory() -> Dict[str, Any]:
     try:
         # Get all devices from oregistry
         all_devices = oregistry.all_devices
-        
+
         for device in all_devices:
             try:
                 device_name = device.name
@@ -336,7 +336,7 @@ def validate_pv_connections() -> Dict[str, Any]:
     try:
         # Get all devices from oregistry
         all_devices = oregistry.all_devices
-        
+
         for device in all_devices:
             try:
                 device_name = device.name
@@ -490,7 +490,7 @@ def benchmark_performance() -> Dict[str, Any]:
         # Get detectors for testing
         detectors = []
         all_devices = oregistry.all_devices
-        
+
         for device in all_devices:
             try:
                 if hasattr(device, "hdf5"):
