@@ -52,7 +52,11 @@ class TSTDetector(VimbaDetector):
 
         # Initialize with mock mode context
         with init_devices(mock=mock_mode):
+            print(mock_mode)
+            print(prefix)
+            print(name)
             super().__init__(prefix, path_provider, name=name, **kwargs)
+            print("done")
 
         logger.info(
             f"Initialized TST detector '{name}' with prefix '{prefix}' "

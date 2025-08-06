@@ -27,13 +27,13 @@ from tst_instrument.plans.sim_plans import sim_count_plan
 - **Device modules:**
   - `tst_detector.py`: Updated provider import
   - `tst_panda.py`: Updated provider import
-  
+
 - **Plan modules:**
   - `xas_plans.py`: Updated flyer coordinator import
-  
+
 - **Utilities:**
   - `system_tools.py`: Updated plan imports and warmup_hdf5 import
-  
+
 - **Startup:**
   - `startup.py`: Updated all plan and callback imports
 
@@ -42,7 +42,7 @@ from tst_instrument.plans.sim_plans import sim_count_plan
 All `__init__.py` files now contain only package docstrings:
 
 - `src/tst_instrument/devices/__init__.py`
-- `src/tst_instrument/plans/__init__.py`  
+- `src/tst_instrument/plans/__init__.py`
 - `src/tst_instrument/utils/__init__.py`
 
 **Example:**

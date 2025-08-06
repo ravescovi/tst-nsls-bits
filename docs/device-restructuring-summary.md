@@ -16,11 +16,11 @@ Each device type now has its own dedicated module with a single device class:
 - **`tst_motor.py`**: Contains `TSTMotor` class
   - Enhanced Motor class with TST-specific configuration
   - Automatic mock mode detection
-  
-- **`tst_detector.py`**: Contains `TSTDetector` class 
+
+- **`tst_detector.py`**: Contains `TSTDetector` class
   - Enhanced VimbaDetector with TST path provider
   - NSLS-II compliant data organization
-  
+
 - **`tst_panda.py`**: Contains `TSTPanda` class
   - Enhanced HDFPanda with TST path provider
   - Integrated trigger coordination
@@ -89,7 +89,7 @@ For any code that was using the old imports:
 # Old way
 from tst_instrument.devices import create_tst_motors
 
-# New way  
+# New way
 from tst_instrument.devices import TSTMotor
 # Device instantiation is handled by BITS framework via devices.yml
 ```

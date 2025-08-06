@@ -148,5 +148,7 @@ def get_tst_path_provider(mock_mode: bool = False) -> TSTPathProvider:
             "proposal_id": "commissioning",
             "scan_id": 1,
             "beamline_id": "tst",
+            "cycle": "2025-2",
+            "data_session": "pass-56789",
         }
         return TSTPathProvider(metadata_dict=metadata_dict)

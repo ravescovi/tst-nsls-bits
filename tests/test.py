@@ -9,8 +9,8 @@ Test script that demonstrates:
 - Running mock plans
 """
 
-import sys
 import os
+import sys
 
 # Set mock mode for testing
 os.environ["TST_MOCK_MODE"] = "YES"
@@ -23,6 +23,7 @@ print("=" * 80)
 print("\n1. Importing TST startup...")
 try:
     from tst_instrument.startup import *
+
     print("✓ Successfully imported TST startup")
 except Exception as e:
     print(f"✗ Error importing startup: {e}")
@@ -35,14 +36,14 @@ try:
     # Use oregistry.all_devices to get all devices
     all_devices = oregistry.all_devices
     device_list = [(device.name, device) for device in all_devices]
-    
+
     print(f"Total devices found: {len(device_list)}")
     for device_name, device in device_list:
         device_type = type(device).__name__
         print(f"  - {device_name:<20} ({device_type})")
-        
+
         # Show additional info for TST devices
-        if hasattr(device, 'prefix'):
+        if hasattr(device, "prefix"):
             print(f"    PV prefix: {device.prefix}")
 except Exception as e:
     print(f"✗ Error listing devices: {e}")
@@ -53,23 +54,24 @@ print("-" * 40)
 try:
     # Get all available plans
     plan_names = []
-    
+
     # Standard Bluesky plans
     from bluesky import plans as bp
+
     for attr_name in dir(bp):
-        if not attr_name.startswith('_') and callable(getattr(bp, attr_name)):
+        if not attr_name.startswith("_") and callable(getattr(bp, attr_name)):
             plan_names.append(f"bp.{attr_name}")
-    
+
     # TST-specific plans
     tst_plans = [
         "sim_count_plan",
-        "sim_print_plan", 
+        "sim_print_plan",
         "sim_rel_scan_plan",
         "tomo_demo_async",
         "xas_demo_async",
         "energy_calibration_plan",
     ]
-    
+
     print(f"Standard Bluesky plans: {len(plan_names)}")
     print(f"TST-specific plans: {len(tst_plans)}")
     print("\nTST Plans:")
@@ -135,7 +137,7 @@ print("TST BITS Test Script Complete!")
 print("=" * 80)
 
 # Check if running in interactive mode
-if hasattr(sys, 'ps1'):
+if hasattr(sys, "ps1"):
     print("\nYou are now in interactive mode. Available objects:")
     print("  - RE: Run Engine")
     print("  - oregistry: Device registry")
