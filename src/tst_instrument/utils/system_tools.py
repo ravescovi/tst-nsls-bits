@@ -629,21 +629,25 @@ def save_system_report(output_path: Optional[Path] = None) -> Path:
     logger.info(f"System report saved to {output_path}")
     return output_path
 
-from collections import defaultdict
-import warnings
 
-from ophyd.ophydobj import OphydObject
+import warnings
+from collections import defaultdict
+
 from apstools.utils import TableStyle
 from apstools.utils import ipython_shell_namespace
+from ophyd.ophydobj import OphydObject
 
 # Try importing async types if available
 try:
     from ophyd_async.core import Device as AsyncDevice
-    from ophyd_async.core import SignalR, SignalRW
+    from ophyd_async.core import SignalR
+    from ophyd_async.core import SignalRW
+
     HAS_ASYNC = True
 except ImportError:
     AsyncDevice = SignalR = SignalRW = object
     HAS_ASYNC = False
+
 
 def count_child_devices_and_signals(obj):
     """Count children in Device components. For async, returns 0."""

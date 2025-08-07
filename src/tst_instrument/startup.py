@@ -11,16 +11,13 @@ Includes:
 
 # MOCK mode configuration
 # Set to True for development/testing without hardware
-MOCK_MODE = True
+MOCK_MODE = False
 
 # Override MOCK mode from environment variables
-import os
-
 # if os.environ.get("TST_MOCK_MODE", "NO").upper() == "YES":
 #     MOCK_MODE = True
 # if os.environ.get("RUNNING_IN_NSLS2_CI", "NO").upper() == "YES":
 #     MOCK_MODE = True
-
 # Standard Library Imports
 import logging
 from pathlib import Path
@@ -76,7 +73,6 @@ cat = init_catalog(iconfig)
 RE, sd = init_RE(iconfig, bec_instance=bec, cat_instance=cat)
 
 
-
 # These imports must come after the above setup.
 # Queue server block
 if running_in_queueserver():
@@ -87,9 +83,10 @@ else:
     # Import bluesky plans and stubs with prefixes set by common conventions.
     # The apstools plans and utils are imported by '*'.
     from apstools.utils import *  # noqa: F403
-    from .utils.system_tools import listdevices  # noqa: F401
     from bluesky import plan_stubs as bps  # noqa: F401
     from bluesky import plans as bp  # noqa: F401
+
+    from .utils.system_tools import listdevices  # noqa: F401
 
 # Import TST-specific plans and utilities
 # ruff: noqa: E402
@@ -100,8 +97,6 @@ from tst_instrument.plans.tomography_plans import _manta_collect_dark_flat  # no
 from tst_instrument.plans.tomography_plans import tomo_demo_async  # noqa: F401
 from tst_instrument.plans.xas_plans import energy_calibration_plan  # noqa: F401
 from tst_instrument.plans.xas_plans import xas_demo_async  # noqa: F401
-
-
 from tst_instrument.utils.warmup_hdf5 import warmup_hdf5_plugins  # do we need this?
 
 # Experiment specific logic, device and plan loading

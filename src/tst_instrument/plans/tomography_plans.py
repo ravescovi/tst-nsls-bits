@@ -12,6 +12,7 @@ import bluesky.plan_stubs as bps
 
 # Import oregistry for device access
 from apsbits.core.instrument_init import oregistry
+from ophyd_async.core import DetectorTrigger
 from ophyd_async.core import TriggerInfo
 from ophyd_async.epics.motor import FlyMotorInfo
 
@@ -27,6 +28,7 @@ DEFAULT_MD = {"title": "TST Tomography Scan"}
 
 def tomo_demo_async(
     detectors: Optional[List] = None,
+    panda=None,
     num_images: int = 21,
     scan_time: float = 9,
     start_deg: float = 0,
@@ -63,7 +65,8 @@ def tomo_demo_async(
     # Get devices from oregistry
     if detectors is None:
         detectors = [oregistry.find(name="manta1")]
-    panda = oregistry.find(name="panda1")
+    if panda is None:
+        panda = oregistry.find(name="panda1")
     rot_motor = oregistry.find(name="rot_motor")
 
     # Get PandA pcomp block
@@ -92,17 +95,17 @@ def tomo_demo_async(
 
     # Configure trigger information
     det_trigger_info = TriggerInfo(
-        number_of_triggers=num_images,
+        exposures_per_event=num_images,
         livetime=exposure_time,
         deadtime=0.001,
-        trigger="edge_trigger",  # DetectorTrigger.EDGE_TRIGGER
+        trigger=DetectorTrigger.EDGE_TRIGGER,
     )
 
     panda_trigger_info = TriggerInfo(
-        number_of_triggers=num_images,
+        exposures_per_event=num_images,
         livetime=exposure_time,
         deadtime=0.001,
-        trigger="constant_gate",  # DetectorTrigger.CONSTANT_GATE
+        trigger=DetectorTrigger.CONSTANT_GATE,
     )
 
     # Motor fly information
@@ -238,4 +241,3 @@ def _manta_collect_dark_flat(
 
     yield from bps.close_run()
     logger.info("Dark and flat collection completed")
-

@@ -28,11 +28,7 @@ tst_instrument.devices.tst_detector.TSTDetector:
   labels: ["detectors", "cameras"]
 
 # PandA trigger box - using TSTPanda class (temporarily disabled due to p4p dependency)
-# tst_instrument.devices.tst_panda.TSTPanda:
-# - name: panda1
-#   prefix: "XF:31ID1-ES:1{Panda:1}"
-#   labels: ["detectors", "triggers", "panda"]
-
-# Flyers (ophyd_async) - created dynamically in flyers.py
-# These will be created when needed by plans
-# - default_flyer, manta_flyer, panda_flyer
+tst_instrument.devices.tst_panda.TSTPanda:
+- name: panda1
+  prefix: "XF:31ID1-ES{PANDA:1}:"
+  labels: ["detectors", "triggers", "panda"]
