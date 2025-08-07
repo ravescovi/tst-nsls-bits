@@ -20,22 +20,22 @@ from apsbits.core.instrument_init import oregistry
 logger = logging.getLogger(__name__)
 
 
-def initialize_hardware_systems() -> None:
-    """
-    Initialize hardware systems for TST beamline operation.
+# def initialize_hardware_systems() -> None:
+#     """
+#     Initialize hardware systems for TST beamline operation.
 
-    This function can be extended to include other hardware initialization
-    procedures beyond HDF5 warmup.
-    """
-    logger.info("Initializing TST hardware systems")
+#     This function can be extended to include other hardware initialization
+#     procedures beyond HDF5 warmup.
+#     """
+#     logger.info("Initializing TST hardware systems")
 
-    # Future hardware initialization procedures can be added here
-    # Examples:
-    # - Motor homing procedures
-    # - Detector calibration checks
-    # - PandA configuration validation
+#     # Future hardware initialization procedures can be added here
+#     # Examples:
+#     # - Motor homing procedures
+#     # - Detector calibration checks
+#     # - PandA configuration validation
 
-    logger.info("Hardware systems initialization completed")
+#     logger.info("Hardware systems initialization completed")
 
 
 def validate_device_connections(devices: List[Any]) -> dict:

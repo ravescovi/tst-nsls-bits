@@ -76,37 +76,16 @@ cat = init_catalog(iconfig)
 RE, sd = init_RE(iconfig, bec_instance=bec, cat_instance=cat)
 
 
-# Optional Nexus callback block
-# delete this block if not using Nexus
-if iconfig.get("NEXUS_DATA_FILES", {}).get("ENABLE", False):
-    from tst_instrument.callbacks.nexus_data_file_writer import nxwriter_init
-
-    nxwriter = nxwriter_init(RE)
-
-# Optional SPEC callback block
-# delete this block if not using SPEC
-if iconfig.get("SPEC_DATA_FILES", {}).get("ENABLE", False):
-    from tst_instrument.callbacks.spec_data_file_writer import init_specwriter_with_RE
-    from tst_instrument.callbacks.spec_data_file_writer import newSpecFile  # noqa: F401
-    from tst_instrument.callbacks.spec_data_file_writer import (
-        spec_comment,  # noqa: F401
-    )
-    from tst_instrument.callbacks.spec_data_file_writer import specwriter  # noqa: F401
-
-    init_specwriter_with_RE(RE)
 
 # These imports must come after the above setup.
 # Queue server block
 if running_in_queueserver():
     ### To make all the standard plans available in QS, import by '*', otherwise import
     ### plan by plan.
-    from apstools.plans import lineup2  # noqa: F401
     from bluesky.plans import *  # noqa: F403
 else:
     # Import bluesky plans and stubs with prefixes set by common conventions.
     # The apstools plans and utils are imported by '*'.
-    from apstools.plans import *  # noqa: F403
-    from apstools.utils import *  # noqa: F403
     from bluesky import plan_stubs as bps  # noqa: F401
     from bluesky import plans as bp  # noqa: F401
 
@@ -119,9 +98,8 @@ from tst_instrument.plans.tomography_plans import _manta_collect_dark_flat  # no
 from tst_instrument.plans.tomography_plans import tomo_demo_async  # noqa: F401
 from tst_instrument.plans.xas_plans import energy_calibration_plan  # noqa: F401
 from tst_instrument.plans.xas_plans import xas_demo_async  # noqa: F401
-from tst_instrument.utils.system_tools import (
-    initialize_hardware_systems,  # do we need this?
-)
+
+
 from tst_instrument.utils.warmup_hdf5 import warmup_hdf5_plugins  # do we need this?
 
 # Experiment specific logic, device and plan loading
@@ -129,8 +107,6 @@ RE(make_devices(clear=False, file="devices.yml"))  # Create the devices.
 
 # NSLS-II: No APS subnet check needed - removed devices_aps_only.yml loading
 
-# Initialize hardware systems
-initialize_hardware_systems()
 
 # Warm up HDF5 plugins for detectors with HDF5 capabilities
 # Get detectors from oregistry and filter for those with HDF5 plugins
