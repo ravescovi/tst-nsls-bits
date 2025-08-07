@@ -11,15 +11,15 @@ Includes:
 
 # MOCK mode configuration
 # Set to True for development/testing without hardware
-MOCK_MODE = False
+MOCK_MODE = True
 
 # Override MOCK mode from environment variables
 import os
 
-if os.environ.get("TST_MOCK_MODE", "NO").upper() == "YES":
-    MOCK_MODE = True
-if os.environ.get("RUNNING_IN_NSLS2_CI", "NO").upper() == "YES":
-    MOCK_MODE = True
+# if os.environ.get("TST_MOCK_MODE", "NO").upper() == "YES":
+#     MOCK_MODE = True
+# if os.environ.get("RUNNING_IN_NSLS2_CI", "NO").upper() == "YES":
+#     MOCK_MODE = True
 
 # Standard Library Imports
 import logging
@@ -103,7 +103,7 @@ from tst_instrument.plans.xas_plans import xas_demo_async  # noqa: F401
 from tst_instrument.utils.warmup_hdf5 import warmup_hdf5_plugins  # do we need this?
 
 # Experiment specific logic, device and plan loading
-RE(make_devices(clear=False, file="devices.yml"))  # Create the devices.
+make_devices(clear=False, file="devices.yml")  # Create the devices.
 
 # NSLS-II: No APS subnet check needed - removed devices_aps_only.yml loading
 

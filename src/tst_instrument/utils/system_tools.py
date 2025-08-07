@@ -261,7 +261,6 @@ def get_available_plans() -> Dict[str, Any]:
 
     try:
         # Import plan modules to discover available plans
-        from tst_instrument.plans import dm_plans
         from tst_instrument.plans import sim_plans
         from tst_instrument.plans import tomography_plans
         from tst_instrument.plans import xas_plans
@@ -270,7 +269,6 @@ def get_available_plans() -> Dict[str, Any]:
             "tomography": tomography_plans,
             "xas": xas_plans,
             "simulation": sim_plans,
-            "data_management": dm_plans,
         }
 
         for category, module in plan_modules.items():

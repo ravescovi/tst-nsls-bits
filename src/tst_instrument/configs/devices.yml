@@ -19,13 +19,13 @@ tst_instrument.devices.tst_motor.TSTMotor:
   labels: ["motors", "rotation", "baseline"]
 
 # Detectors - using TSTDetector class
-tst_instrument.devices.tst_detector.TSTDetector:
-- name: manta1
-  prefix: "XF:31ID1-ES{GigE-Cam:1}"
-  labels: ["detectors", "cameras"]
-- name: manta2
-  prefix: "XF:31ID1-ES{GigE-Cam:2}"
-  labels: ["detectors", "cameras"]
+# tst_instrument.devices.tst_detector.TSTDetector:
+# - name: manta1
+#   prefix: "XF:31ID1-ES{GigE-Cam:1}"
+#   labels: ["detectors", "cameras"]
+# - name: manta2
+#   prefix: "XF:31ID1-ES{GigE-Cam:2}"
+#   labels: ["detectors", "cameras"]
 
 # PandA trigger box - using TSTPanda class (temporarily disabled due to p4p dependency)
 # tst_instrument.devices.tst_panda.TSTPanda:
