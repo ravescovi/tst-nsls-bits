@@ -12,7 +12,6 @@ import bluesky.plan_stubs as bps
 
 # Import oregistry for device access
 from apsbits.core.instrument_init import oregistry
-from bluesky.utils import make_decorator
 from ophyd_async.core import TriggerInfo
 from ophyd_async.epics.motor import FlyMotorInfo
 
@@ -240,7 +239,3 @@ def _manta_collect_dark_flat(
     yield from bps.close_run()
     logger.info("Dark and flat collection completed")
 
-
-# Decorator for proper plan metadata
-tomo_demo_async = make_decorator(tomo_demo_async)
-_manta_collect_dark_flat = make_decorator(_manta_collect_dark_flat)

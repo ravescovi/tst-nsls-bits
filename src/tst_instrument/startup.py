@@ -86,6 +86,8 @@ if running_in_queueserver():
 else:
     # Import bluesky plans and stubs with prefixes set by common conventions.
     # The apstools plans and utils are imported by '*'.
+    from apstools.utils import *  # noqa: F403
+    from .utils.system_tools import listdevices  # noqa: F401
     from bluesky import plan_stubs as bps  # noqa: F401
     from bluesky import plans as bp  # noqa: F401
 

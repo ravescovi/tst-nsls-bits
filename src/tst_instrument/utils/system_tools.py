@@ -628,3 +628,109 @@ def save_system_report(output_path: Optional[Path] = None) -> Path:
 
     logger.info(f"System report saved to {output_path}")
     return output_path
+
+from collections import defaultdict
+import warnings
+
+from ophyd.ophydobj import OphydObject
+from apstools.utils import TableStyle
+from apstools.utils import ipython_shell_namespace
+
+# Try importing async types if available
+try:
+    from ophyd_async.core import Device as AsyncDevice
+    from ophyd_async.core import SignalR, SignalRW
+    HAS_ASYNC = True
+except ImportError:
+    AsyncDevice = SignalR = SignalRW = object
+    HAS_ASYNC = False
+
+def count_child_devices_and_signals(obj):
+    """Count children in Device components. For async, returns 0."""
+    from ophyd.device import Device
+    from ophyd.signal import Signal
+
+    counts = {"Device": 0, "Signal": 0}
+    if isinstance(obj, Device):
+        for name in obj.component_names:
+            component = getattr(obj, name)
+            if isinstance(component, Device):
+                counts["Device"] += 1
+            elif isinstance(component, Signal):
+                counts["Signal"] += 1
+    return counts
+
+
+def listdevices(
+    show_pv=True,
+    printing=None,  # DEPRECATED
+    verbose=False,
+    symbols=None,
+    child_devices=False,
+    child_signals=False,
+    table_style=TableStyle.pyRestTable,
+):
+    """
+    List all ophyd or ophyd_async Signal and Device objects from the symbol table.
+    """
+
+    # Determine symbol source
+    if symbols is None:
+        g = ipython_shell_namespace()
+        if len(g) == 0:
+            g = globals()
+    else:
+        g = symbols
+
+    # Collect matching objects
+    all_objects = {}
+    for k, v in sorted(g.items()):
+        if isinstance(v, OphydObject):
+            all_objects[k] = v
+        elif HAS_ASYNC and isinstance(v, (AsyncDevice, SignalR, SignalRW)):
+            all_objects[k] = v
+
+    # Build the output table
+    contents = defaultdict(list)
+    for name, obj in all_objects.items():
+        contents["name"].append(name)
+        contents["class"].append(obj.__class__.__name__)
+
+        # Try to get PV/prefix
+        pv = ""
+        if show_pv:
+            pv = getattr(obj, "pvname", None) or getattr(obj, "prefix", "")
+            if callable(pv):
+                try:
+                    pv = pv()
+                except Exception:
+                    pv = ""
+        contents["PV (or prefix)"].append(pv)
+
+        # Verbose object string
+        if verbose:
+            contents["object"].append(str(obj))
+
+        # Children counts (sync only)
+        if child_devices or child_signals:
+            if isinstance(obj, OphydObject):
+                counts = count_child_devices_and_signals(obj)
+            else:
+                counts = {"Device": 0, "Signal": 0}
+
+            if child_devices:
+                contents["#devices"].append(counts["Device"])
+            if child_signals:
+                contents["#signals"].append(counts["Signal"])
+
+        # Ophyd labels (sync only)
+        if hasattr(obj, "_ophyd_labels_"):
+            contents["label(s)"].append(" ".join(obj._ophyd_labels_))
+        else:
+            contents["label(s)"].append("")
+
+    # Warn on deprecated `printing` keyword
+    if printing is not None:
+        warnings.warn(f"Keyword argument 'printing={printing}' is deprecated.")
+
+    return table_style.value(contents)
