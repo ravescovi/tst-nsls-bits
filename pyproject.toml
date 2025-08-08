@@ -16,6 +16,7 @@ license-files = ["LICEN[CS]E*"]
 dependencies = [ "apsbits",
 "aioca",
 "nslsii",
+"tiled[client]",
 ]
 
 authors = [

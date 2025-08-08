@@ -45,7 +45,7 @@ class TSTPathProvider(NSLS2PathProvider):
         ).lower()
 
         beamline_proposals_dir = Path(
-            f"/nsls2/data/{beamline_tla}/legacy/mock-proposals"
+            f"/nsls2/data1/{beamline_tla}/legacy/mock-proposals"
         )
 
         return beamline_proposals_dir
@@ -149,6 +149,6 @@ def get_tst_path_provider(mock_mode: bool = False) -> TSTPathProvider:
             "scan_id": 1,
             "beamline_id": "tst",
             "cycle": "2025-2",
-            "data_session": "pass-56789",
+            "data_session": "pass-56789",  # TODO: Get this information from the RunEngine metadata
         }
         return TSTPathProvider(metadata_dict=metadata_dict)
