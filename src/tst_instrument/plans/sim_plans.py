@@ -12,7 +12,7 @@ For development and testing only, provides plans.
 
 import logging
 
-from apsbits.core.instrument_init import oregistry
+from apsbits.core.instrument_init import with_registry
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
 
@@ -22,7 +22,10 @@ logger.bsdev(__file__)
 DEFAULT_MD = {"title": "test run with simulator(s)"}
 
 
-def sim_count_plan(detector=None, num: int = 1, imax: float = 10_000, md: dict = None):
+@with_registry
+def sim_count_plan(
+    oregistry, detector=None, num: int = 1, imax: float = 10_000, md: dict = None
+):
     """Demonstrate the ``count()`` plan."""
     logger.debug("sim_count_plan()")
 
@@ -44,7 +47,8 @@ def sim_count_plan(detector=None, num: int = 1, imax: float = 10_000, md: dict =
     yield from bp.count([detector], num=num, md=md)
 
 
-def sim_print_plan(message: str = "This is a test."):
+@with_registry
+def sim_print_plan(oregistry, message: str = "This is a test."):
     """Demonstrate a ``print()`` plan stub (no data streams)."""
     logger.debug("sim_print_plan()")
     yield from bps.null()
@@ -58,7 +62,9 @@ def sim_print_plan(message: str = "This is a test."):
         print(f"sim_print_plan(): Device not found: {e}")
 
 
+@with_registry
 def sim_rel_scan_plan(
+    oregistry,
     detector=None,
     motor=None,
     start: float = -2.5,

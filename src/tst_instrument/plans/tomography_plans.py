@@ -11,7 +11,7 @@ from typing import Optional
 import bluesky.plan_stubs as bps
 
 # Import oregistry for device access
-from apsbits.core.instrument_init import oregistry
+from apsbits.core.instrument_init import with_registry
 from ophyd_async.core import DetectorTrigger
 from ophyd_async.core import TriggerInfo
 from ophyd_async.epics.motor import FlyMotorInfo
@@ -25,8 +25,9 @@ COUNTS_PER_DEG = COUNTS_PER_REVOLUTION / DEG_PER_REVOLUTION
 
 DEFAULT_MD = {"title": "TST Tomography Scan"}
 
-
+@with_registry
 def tomo_demo_async(
+    oregistry,
     detectors: Optional[List] = None,
     panda=None,
     num_images: int = 21,
@@ -183,8 +184,9 @@ def tomo_demo_async(
 
     logger.info("Tomography scan completed successfully")
 
-
+@with_registry
 def _manta_collect_dark_flat(
+    oregistry,
     detectors: Optional[List] = None,
     num_dark: int = 10,
     num_flat: int = 10,
