@@ -21,23 +21,26 @@ MOCK_MODE = False
 # Standard Library Imports
 import logging
 from pathlib import Path
-from tiled.client import from_uri
+
+# Core Functions
+from tiled.client import from_profile
 
 from apsbits.core.best_effort_init import init_bec_peaks
 from apsbits.core.catalog_init import init_catalog
+from apsbits.core.instrument_init import init_instrument
 from apsbits.core.instrument_init import make_devices
-from apsbits.core.instrument_init import oregistry
-
-# Core Functions
 from apsbits.core.run_engine_init import init_RE
 
 # Utility functions
 # Note: APS-specific functions removed for NSLS-II deployment
+from apsbits.utils.baseline_setup import setup_baseline_stream
+
 # Configuration functions
 from apsbits.utils.config_loaders import load_config
 from apsbits.utils.helper_functions import register_bluesky_magics
 from apsbits.utils.helper_functions import running_in_queueserver
 from apsbits.utils.logging_setup import configure_logging
+
 
 # Configuration block
 # Get the path to the instrument package
@@ -56,6 +59,9 @@ configure_logging(extra_logging_configs_path=extra_logging_configs_path)
 logger = logging.getLogger(__name__)
 logger.info("Starting Instrument with iconfig: %s", iconfig_path)
 
+# initialize instrument
+instrument, oregistry = init_instrument("guarneri")
+
 # Discard oregistry items loaded above.
 oregistry.clear()
 
@@ -65,17 +71,18 @@ oregistry.clear()
 # Command-line tools, such as %wa, %ct, ...
 register_bluesky_magics()
 
+if iconfig.get("TILED_PROFILE_NAME", {}):
+    profile_name = iconfig.get("TILED_PROFILE_NAME")
+    tiled_client = from_profile(profile_name)
+
+# with open("/home/xf31id/.ipython/profile_blop_flyscan/startup/api_key.txt", 'r') as file:
+#     key = file.readline().strip()
+# tiled_client = from_uri("http://localhost:8842", api_key=key)
+
 # Bluesky initialization block
-# Instrument = ...
-# oregistry = ...
-# oregistry.clear()
 bec, peaks = init_bec_peaks(iconfig)
 cat = init_catalog(iconfig)
-with open("/home/xf31id/.ipython/profile_blop_flyscan/startup/api_key.txt", 'r') as file:
-    key = file.readline().strip()
-tiled_client = from_uri("http://localhost:8842", api_key=key)
-
-RE, sd = init_RE(iconfig, bec_instance=bec, cat_instance=cat, tiled_client_instance=tiled_client)
+RE, sd = init_RE(iconfig, subscribers=[bec, cat, tiled_client])
 
 
 # These imports must come after the above setup.
@@ -93,6 +100,10 @@ else:
 
     from .utils.system_tools import listdevices  # noqa: F401
 
+
+# Experiment specific logic, device and plan loading. # Create the devices.
+make_devices(clear=False, file="devices.yml", device_manager=instrument)
+
 # Import TST-specific plans and utilities
 # ruff: noqa: E402
 from tst_instrument.plans.sim_plans import sim_count_plan  # noqa: F401
@@ -104,10 +115,11 @@ from tst_instrument.plans.xas_plans import energy_calibration_plan  # noqa: F401
 from tst_instrument.plans.xas_plans import xas_demo_async  # noqa: F401
 from tst_instrument.utils.warmup_hdf5 import warmup_hdf5_plugins  # do we need this?
 
-# Experiment specific logic, device and plan loading
-make_devices(clear=False, file="devices.yml")  # Create the devices.
-
 # NSLS-II: No APS subnet check needed - removed devices_aps_only.yml loading
+
+# Setup baseline stream with connect=False is default
+# Devices with the label 'baseline' will be added to the baseline stream.
+setup_baseline_stream(sd, oregistry, connect=False)
 
 
 # Warm up HDF5 plugins for detectors with HDF5 capabilities
